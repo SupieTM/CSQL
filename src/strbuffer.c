@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-void strbuf_readline(strBuffer* buf, FILE* file) {
+void strbuf_readline(strBuffer* buf, FILE* file, char delim) {
   //Initalize the buffer size and a character
   //Then alloc memory for the buffer
   int bufsize = 1;
@@ -12,7 +12,7 @@ void strbuf_readline(strBuffer* buf, FILE* file) {
 
   buf->string = malloc(bufsize);
 
-  while((c = getc(file)), c != '\n' && c != '\0' && c != EOF) {
+  while((c = getc(file)), c != '\0' && c != EOF && c != delim) {
     //If more space needs to be allocated
     if (index == bufsize) {
       bufsize *= 2;
@@ -28,5 +28,10 @@ void strbuf_readline(strBuffer* buf, FILE* file) {
 
   buf->strlen = index;
   buf->string[index] = '\0';
+}
+
+void strbuf_clear(strBuffer* buf) {
+  free(buf->string);
+  buf->strlen = 0;
 }
 

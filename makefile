@@ -1,7 +1,7 @@
 MAIN = main.c
-SRC = src/strbuffer.c
+SRC = src/strbuffer.c src/table.c
 HEADER = SRC:.c=.h
-FLAG = -Wall
+FLAG = -Wall -g
 NAME = CDATA
 
 $(NAME): $(SRC)

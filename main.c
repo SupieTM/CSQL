@@ -1,17 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "include/strbuffer.h"
+#include "include/table.h"
 
 
 int main(int argc, char *argv[])
 {
 
-  strBuffer *buf = malloc(sizeof(strBuffer));
-
-  strbuf_readline(buf, stdin);
-
-  printf("%s", buf->string);
-  printf("\nThe size is: %d", buf->strlen);
+  table* tb = inittable("test.txt");
 
   return EXIT_SUCCESS;
 }
