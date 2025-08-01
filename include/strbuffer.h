@@ -5,8 +5,9 @@
 
 
 typedef struct strBuffer {
-  char* string;
   int strlen;
+  int globindex;
+  char* string;
 } strBuffer;
 
 

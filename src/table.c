@@ -4,18 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-table *inittable(char *filename) {
 
-  FILE *file = fopen(filename, "r");
-  table *tb = malloc(sizeof(table));
-  tb->numlab = 0;
-  loadlabels_t(tb, file);
-  fclose(file);
-
-  return tb;
-}
-
-void loadlabels_t(table *tb, FILE *file) {
+static void loadlabels_t(table *tb, FILE *file) {
   //Init value
   strBuffer *buf = malloc(sizeof(strBuffer));
   int index = 0;
@@ -27,6 +17,7 @@ void loadlabels_t(table *tb, FILE *file) {
     tb->labels = realloc(tb->labels, sizeof(char *) * (index + 1));
     tb->labels[index] = malloc(buf->strlen);
     strcpy(tb->labels[index++], buf->string);
+    strbuf_clear(buf);
   }
 
   //Do a final loop, but remove the new line character
@@ -34,7 +25,28 @@ void loadlabels_t(table *tb, FILE *file) {
   tb->labels[index] = malloc(buf->strlen - 1);
   buf->string[buf->strlen - 1] = '\0';
   strcpy(tb->labels[index], buf->string);
+  strbuf_clear(buf);
+  free(buf);
+  
 
   //set the number of labels
   tb->numlab = index + 1;
+}
+
+static void loaddata_t(table *tb, FILE *file) {
+  strBuffer *buf = malloc(sizeof(strBuffer));
+  int index = 0;
+}
+
+
+table *inittable(char *filename) {
+
+  FILE *file = fopen(filename, "r");
+  table *tb = malloc(sizeof(table));
+  tb->numlab = 0;
+  loadlabels_t(tb, file);
+  loaddata_t(tb, file);
+  fclose(file);
+
+  return tb;
 }

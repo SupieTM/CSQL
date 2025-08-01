@@ -14,8 +14,6 @@ typedef struct table {
   node* start;
 } table;
 
-void loadlabels_t(table* tb, FILE* file);
-
 table* inittable(char* filename);
 
 #endif

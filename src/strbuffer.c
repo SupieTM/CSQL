@@ -25,15 +25,19 @@ void strbuf_readline(strBuffer* buf, FILE* file, char delim, int leavenewline) {
       buf->string = realloc(buf->string, index + 1);
   }
 
+  //Some functions need the new line character in order for their loops to work
+  //This places the new line character back into the string
   if (leavenewline && c == '\n') {
       buf->string = realloc(buf->string, index + 2);
       buf->string[index++] = '\n';
   }
 
   buf->strlen = index;
+  buf->globindex = 0;
   buf->string[index] = '\0';
 }
 
+//Clears memory from the buffer
 void strbuf_clear(strBuffer* buf) {
   free(buf->string);
   buf->strlen = 0;
