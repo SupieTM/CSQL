@@ -14,6 +14,7 @@ typedef struct table {
   node* start;
 } table;
 
+//Code to initalize the whole table given a file
 table* inittable(char* filename);
 
 #endif

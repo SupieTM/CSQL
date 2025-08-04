@@ -5,10 +5,11 @@
 
 int main(int argc, char *argv[]) {
 
-  /*table *tb = inittable("test.txt");*/
-  /*for (int i = 0; i < tb->numlab; i++) {*/
-  /*  printf("%s\t", tb->labels[i]);*/
-  /*}*/
+  table *tb = inittable("test.txt");
+
+  for (int i = 0; i < 4; i++) {
+    printf("%s\n", tb->labels[i]);
+  }
 
   return EXIT_SUCCESS;
 }

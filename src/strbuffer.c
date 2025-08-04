@@ -57,7 +57,6 @@ int strbuf_readfrombuf(strBuffer *outputBuf, strBuffer *inputBuf, char delim) {
 
   // Check if indexes are within bounds
   if (start >= inputBuf->strlen) {
-    printf("Invalid Index, quitting");
     return 0;
   }
 

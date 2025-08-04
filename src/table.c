@@ -6,31 +6,26 @@
 
 
 static void loadlabels_t(table *tb, FILE *file) {
-  //Init value
+  //Initalzie buffers
   strBuffer *buf = malloc(sizeof(strBuffer));
+  strBuffer *nbuf = malloc(sizeof(strBuffer));
+
+
+  //Initalize the labels
+  tb->labels = malloc(sizeof(char*));
+
+  //Pull in the first line from the file
+  strbuf_readline(buf, file, '\n', 0);
   int index = 0;
-  tb->labels = malloc(sizeof(char *));
 
-  //Loop and insert labels
-  while ((strbuf_readline(buf, file, ',', 1),
-          buf->string[buf->strlen - 1] != '\n')) {
-    tb->labels = realloc(tb->labels, sizeof(char *) * (index + 1));
-    tb->labels[index] = malloc(buf->strlen);
-    strcpy(tb->labels[index++], buf->string);
-    strbuf_clear(buf);
+  //Loop through each labels, realloc more memory for the labels list, then insert the label into the list
+  while(strbuf_readfrombuf(nbuf, buf, ',')) {
+    tb->labels = realloc(tb->labels, sizeof(char*) * (index + 1));
+    tb->labels[index] = malloc(nbuf->strlen);
+    strcpy(tb->labels[index], nbuf->string);
+    strbuf_clear(nbuf);
+    index++;
   }
-
-  //Do a final loop, but remove the new line character
-  tb->labels = realloc(tb->labels, sizeof(char *) * (index + 1));
-  tb->labels[index] = malloc(buf->strlen - 1);
-  buf->string[buf->strlen - 1] = '\0';
-  strcpy(tb->labels[index], buf->string);
-  strbuf_clear(buf);
-  free(buf);
-  
-
-  //set the number of labels
-  tb->numlab = index + 1;
 }
 
 static void loaddata_t(table *tb, FILE *file) {
@@ -38,10 +33,12 @@ static void loaddata_t(table *tb, FILE *file) {
   int index = 0;
 }
 
-
 table *inittable(char *filename) {
 
+  //Open the table file
   FILE *file = fopen(filename, "r");
+
+  //Initalize the labels and data
   table *tb = malloc(sizeof(table));
   tb->numlab = 0;
   loadlabels_t(tb, file);
