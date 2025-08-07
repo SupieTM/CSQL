@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void strbuf_readline(strBuffer *buf, FILE *file, char delim, int leavenewline) {
+int strbuf_readline(strBuffer *buf, FILE *file, char delim, int leavenewline) {
   // Initalize the buffer size and a character
   // Then alloc memory for the buffer
   int bufsize = 1;
@@ -21,6 +21,12 @@ void strbuf_readline(strBuffer *buf, FILE *file, char delim, int leavenewline) {
 
     buf->string[index++] = c;
   }
+
+  if (index == 0) {
+    return 0;
+
+  }
+
   if (bufsize != index + 1) {
     buf->string = realloc(buf->string, index + 1);
   }
@@ -35,6 +41,7 @@ void strbuf_readline(strBuffer *buf, FILE *file, char delim, int leavenewline) {
   buf->strlen = index;
   buf->globindex = 0;
   buf->string[index] = '\0';
+  return 1;
 }
 
 // Clears memory from the buffer

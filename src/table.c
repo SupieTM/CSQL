@@ -4,23 +4,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 static void loadlabels_t(table *tb, FILE *file) {
-  //Initalzie buffers
+  // Initalzie buffers
   strBuffer *buf = malloc(sizeof(strBuffer));
   strBuffer *nbuf = malloc(sizeof(strBuffer));
 
+  // Initalize the labels
+  tb->labels = malloc(sizeof(char *));
 
-  //Initalize the labels
-  tb->labels = malloc(sizeof(char*));
-
-  //Pull in the first line from the file
+  // Pull in the first line from the file
   strbuf_readline(buf, file, '\n', 0);
   int index = 0;
 
-  //Loop through each labels, realloc more memory for the labels list, then insert the label into the list
-  while(strbuf_readfrombuf(nbuf, buf, ',')) {
-    tb->labels = realloc(tb->labels, sizeof(char*) * (index + 1));
+  // Loop through each labels, realloc more memory for the labels list, then
+  // insert the label into the list
+  while (strbuf_readfrombuf(nbuf, buf, ',')) {
+    tb->labels = realloc(tb->labels, sizeof(char *) * (index + 1));
     tb->labels[index] = malloc(nbuf->strlen);
     strcpy(tb->labels[index], nbuf->string);
     strbuf_clear(nbuf);
@@ -30,15 +29,34 @@ static void loadlabels_t(table *tb, FILE *file) {
 
 static void loaddata_t(table *tb, FILE *file) {
   strBuffer *buf = malloc(sizeof(strBuffer));
-  int index = 0;
+  strBuffer *nbuf = malloc(sizeof(strBuffer));
+
+  tb->start = malloc(sizeof(node));
+  node *tn = tb->start;
+
+  while (strbuf_readline(buf, file, '\n', 0)) {
+    int index = 0;
+    tn->data = malloc(sizeof(char *));
+    while (strbuf_readfrombuf(nbuf, buf, ',')) {
+      tn->data = realloc(tn->data, sizeof(char *) * (index + 1));
+      tn->data[index] = malloc(sizeof(nbuf->strlen));
+      strcpy(tn->data[index], nbuf->string);
+      strbuf_clear(nbuf);
+      index++;
+    }
+
+    tn->next = malloc(sizeof(node));
+    tn = tn->next;
+    strbuf_clear(buf);
+  }
 }
 
 table *inittable(char *filename) {
 
-  //Open the table file
+  // Open the table file
   FILE *file = fopen(filename, "r");
 
-  //Initalize the labels and data
+  // Initalize the labels and data
   table *tb = malloc(sizeof(table));
   tb->numlab = 0;
   loadlabels_t(tb, file);
