@@ -25,11 +25,15 @@ static void loadlabels_t(table *tb, FILE *file) {
     strbuf_clear(nbuf);
     index++;
   }
+
+  tb->numlab = index--;
 }
 
 static void loaddata_t(table *tb, FILE *file) {
   strBuffer *buf = malloc(sizeof(strBuffer));
   strBuffer *nbuf = malloc(sizeof(strBuffer));
+
+  int _numnodes = 0;
 
   tb->start = malloc(sizeof(node));
   node *tn = tb->start;
@@ -39,16 +43,18 @@ static void loaddata_t(table *tb, FILE *file) {
     tn->data = malloc(sizeof(char *));
     while (strbuf_readfrombuf(nbuf, buf, ',')) {
       tn->data = realloc(tn->data, sizeof(char *) * (index + 1));
-      tn->data[index] = malloc(sizeof(nbuf->strlen));
+      tn->data[index] = malloc(nbuf->strlen);
       strcpy(tn->data[index], nbuf->string);
       strbuf_clear(nbuf);
       index++;
     }
-
+    _numnodes++;
     tn->next = malloc(sizeof(node));
     tn = tn->next;
     strbuf_clear(buf);
   }
+
+  tb->numnodes = _numnodes;
 }
 
 table *inittable(char *filename) {
@@ -61,7 +67,26 @@ table *inittable(char *filename) {
   tb->numlab = 0;
   loadlabels_t(tb, file);
   loaddata_t(tb, file);
+
   fclose(file);
 
   return tb;
+}
+
+void printtable(table *tb) {
+
+  node *tempnode = tb->start;
+  for (int i = 0; i < tb->numlab; i++) {
+    printf("%s\t", tb->labels[i]);
+  }
+  printf("\n");
+  for (int i = 0; i < tb->numnodes; i++) {
+    for (int j = 0; j < tb->numlab; j++) {
+      printf("%s\t", tempnode->data[j]);
+    }
+    printf("\n");
+    tempnode = tempnode->next;
+  }
+
+  return;
 }
