@@ -40,6 +40,10 @@ static void loaddata_t(table *tb, FILE *file) {
 
   while (strbuf_readline(buf, file, '\n', 0)) {
     int index = 0;
+    if (_numnodes) {
+      tn->next = malloc(sizeof(node));
+      tn = tn->next;
+    }
     tn->data = malloc(sizeof(char *));
     while (strbuf_readfrombuf(nbuf, buf, ',')) {
       tn->data = realloc(tn->data, sizeof(char *) * (index + 1));
@@ -49,8 +53,6 @@ static void loaddata_t(table *tb, FILE *file) {
       index++;
     }
     _numnodes++;
-    tn->next = malloc(sizeof(node));
-    tn = tn->next;
     strbuf_clear(buf);
   }
 
@@ -89,4 +91,36 @@ void printtable(table *tb) {
   }
 
   return;
+}
+
+int findlabelindex_t(table *tb, char *inputtedlabel) {
+  for (int i = 0; i < tb->numlab; i++) {
+    if (!strcmp(tb->labels[i], inputtedlabel)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+char **finddatagivenlabel_t(table *tb, char *inputteddata, int labelnum) {
+  if (labelnum < 0) {
+    printf("Coudnlt find label");
+    return NULL;
+  }
+
+  node *tn = tb->start;
+  while (tn != NULL) {
+    if (!strcmp(tn->data[labelnum], inputteddata)) {
+      return tn->data;
+    }
+    tn = tn->next;
+  }
+
+  printf("Coudnlt find DATA");
+  return NULL;
+}
+
+char **retrievedataline(table *tb, char *ilabel, char *idata) {
+  int index = findlabelindex_t(tb, ilabel);
+  return finddatagivenlabel_t(tb, idata, index);
 }
