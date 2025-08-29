@@ -56,6 +56,7 @@ static void loaddata_t(table *tb, FILE *file) {
     strbuf_clear(buf);
   }
 
+  tn->next = NULL;
   tb->numnodes = _numnodes;
 }
 
@@ -124,3 +125,19 @@ char **retrievedataline(table *tb, char *ilabel, char *idata) {
   int index = findlabelindex_t(tb, ilabel);
   return finddatagivenlabel_t(tb, idata, index);
 }
+
+void changedataline(table *tb, char *ilabel, char* idata, char* clabel, char* newdata) {
+  int index = findlabelindex_t(tb, ilabel);
+  char** dataline = finddatagivenlabel_t(tb, idata, index);
+
+
+  index = findlabelindex_t(tb, clabel);
+
+  dataline[index] = realloc(dataline[index], strlen(newdata));
+  dataline[index] = newdata;
+
+  for (int i = 0; i < tb->numlab; i++) {
+    printf("%s\t", dataline[i]);
+  }
+}
+

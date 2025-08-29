@@ -7,21 +7,16 @@ int main(int argc, char *argv[]) {
 
   table *tb = inittable("test.txt");
 
-  printtable(tb);
-  
-  char** temp = retrievedataline(tb, "pet", "bob"); 
+  char **dataline = malloc(sizeof(char *) * 4);
 
-  if (temp == NULL) {
-    printf("Couldn't find thingy\n");
-    return EXIT_SUCCESS;
+  char* temp = "1234567";
 
-  }
-  for (int i = 0; i < tb->numlab; i++) {
-    printf("%s\t", temp[i]);
-
+  for (int i = 0; i < 4; i++) {
+    dataline[i] = malloc(8);
+    dataline[i] = temp;
   }
 
-
+  changedataline(tb, "name", "bob", "house", "tragic");
 
   return EXIT_SUCCESS;
 }
